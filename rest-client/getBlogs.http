@@ -1,0 +1,10 @@
+GET https://api-placeholder.herokuapp.com/api/v2/blogs
+content-type: application/json
+
+{
+  // "page": 1,
+  // "offset": 20,
+  // "search": "",
+  // "sort_by": "created_at",
+  // "sort_direction": "desc"
+}
