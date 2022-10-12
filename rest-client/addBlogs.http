@@ -1,0 +1,8 @@
+POST https://api-placeholder.herokuapp.com/api/v2/blogs
+Content-Type: application/json
+
+{
+  "blog[title]": "test",
+  "blog[content]": "Hello\nTest"
+  //"blog[image]": ""
+}

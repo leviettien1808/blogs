@@ -15,6 +15,29 @@ export type PaginationProps = {
   next: number;
   offset: number;
   page: number;
-  prev?: number;
+  prev: number;
   total: number;
+};
+
+export type SortByProps =
+  | 'id'
+  | 'title'
+  | 'content'
+  | 'created_at'
+  | 'updated_at';
+
+export type SortDirectionProps = 'asc' | 'desc';
+
+export type GetBlogsProps = {
+  page?: number;
+  offset?: number;
+  search?: string;
+  sort_by?: SortByProps;
+  sort_direction?: SortDirectionProps;
+};
+
+export type AddBlogsProps = {
+  title: string;
+  content: string;
+  image?: string;
 };
