@@ -17,6 +17,7 @@ export default function Home() {
     sort_by: 'created_at',
     sort_direction: 'desc',
   });
+
   const [hasNewBlog, setHasNewBlog] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -31,6 +32,11 @@ export default function Home() {
         setBlogs(response.data.items);
         setPagination(response.pagination);
       });
+    }
+    // RELOAD AFTER EDIT BLOG
+    const editBlogStatus = localStorage.getItem('StatusEdit');
+    if (editBlogStatus) {
+      setHasNewBlog(editBlogStatus === 'success');
     }
     return () => {
       setHasNewBlog(false);

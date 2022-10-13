@@ -41,3 +41,7 @@ export type AddBlogsProps = {
   content: string;
   image?: string;
 };
+
+export type EditBlogProps = {
+  id: number;
+} & AddBlogsProps;

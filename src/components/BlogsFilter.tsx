@@ -8,7 +8,7 @@ type BlogsFilterProps = {
 
 export default function BlogsFilter({ value, onChange }: BlogsFilterProps) {
   return (
-    <div className='row'>
+    <div className='row m-0 mb-3'>
       {/* FILTER RECORDS */}
       <div className='col-lg-3 col-md-3 col-sm-12'>
         <label htmlFor='offset'>Number of items per page</label>
@@ -37,7 +37,12 @@ export default function BlogsFilter({ value, onChange }: BlogsFilterProps) {
       </div>
       {/* FILTER id, title, content, created_at, updated_at */}
       <div className='col-lg-3 col-md-3 col-sm-12'>
-        <label htmlFor='sort_by'>Sort by</label>
+        <label
+          htmlFor='sort_by'
+          className='d-block'
+        >
+          Sort by
+        </label>
         <select
           id='sort_by'
           onChange={(e) => onChange({ sort_by: e.target.value as SortByProps })}
@@ -51,7 +56,12 @@ export default function BlogsFilter({ value, onChange }: BlogsFilterProps) {
       </div>
       {/* FILTER DIRECTION */}
       <div className='col-lg-3 col-md-3 col-sm-12'>
-        <label htmlFor='sort_direction'>Sort direction</label>
+        <label
+          htmlFor='sort_direction'
+          className='d-block'
+        >
+          Sort direction
+        </label>
         <select
           id='sort_direction'
           onChange={(e) =>

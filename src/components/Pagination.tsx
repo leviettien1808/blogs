@@ -29,7 +29,7 @@ export default function Pagination({ data, onPage }: Props) {
   };
 
   return (
-    <div>
+    <div className='d-flex justify-content-center'>
       <nav aria-label='Page navigation example'>
         <ul className='pagination'>
           <li className={`page-item ${!data.prev && 'disabled'}`}>

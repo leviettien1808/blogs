@@ -1,22 +1,31 @@
 import React from 'react';
-import { Controller, useForm, SubmitHandler } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Form,
   FormGroup,
-  Label,
   Input,
-  Alert,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from 'reactstrap';
-import { addBlog } from '../api/addBlog';
+import { updateBlog } from '../api/updateBlog';
+import { BlogEntity } from '../types';
 
-type AddBlogModalProps = {
-  hasNewBlog?: (value: boolean) => void;
-  open?: boolean;
+type EditBlogModalProps = {
+  isOpen: boolean;
+  toggle: () => void;
+  data: BlogEntity;
+  onStatusEditBlog?: ({
+    status,
+    message,
+  }: {
+    status: 'success' | 'danger';
+    message: string;
+  }) => void;
+  onOpenAlert?: (value: boolean) => void;
 };
 
 type Inputs = {
@@ -25,80 +34,54 @@ type Inputs = {
   image?: string;
 };
 
-export default function AddBlogModal({ hasNewBlog, open }: AddBlogModalProps) {
-  const [modal, setModal] = React.useState<boolean>(open ?? false);
-
-  const toggle = () => setModal(!modal);
-  const [statusNewBlog, setStatusNewBlog] = React.useState<{
-    status: 'success' | 'danger';
-    message: string;
-  }>();
-  const [openAlert, setOpenAlert] = React.useState<boolean>(false);
-
+export default function EditBlogModal({
+  isOpen,
+  toggle,
+  data,
+  onStatusEditBlog,
+  onOpenAlert,
+}: EditBlogModalProps) {
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      content: '',
-      image: '',
-      title: '',
-    },
-  });
+  } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    addBlog({
-      ...data,
-      image:
-        'https://res.cloudinary.com/sontd-nal-vn/image/upload/v1665591059/ibvffubq59w07vopsc5i.png',
-    })
+  const onSubmit: SubmitHandler<Inputs> = (value) => {
+    updateBlog({ id: data.id, ...value })
       .then((response) => {
-        setStatusNewBlog({
-          status: 'success',
-          message: `Add [${data.title}] successly!`,
-        });
-        setOpenAlert(true);
-        if (hasNewBlog && typeof hasNewBlog === 'function') {
-          hasNewBlog(true);
+        if (onStatusEditBlog && typeof onStatusEditBlog === 'function') {
+          onStatusEditBlog({
+            status: 'success',
+            message: `Update [${data.title}] successly!`,
+          });
         }
+        if (onOpenAlert && typeof onOpenAlert === 'function') {
+          onOpenAlert(true);
+        }
+        localStorage.setItem('StatusEdit', 'success');
       })
       .catch((error) => {
-        setStatusNewBlog({
-          status: 'danger',
-          message: `Add [${data.title}] failed!`,
-        });
-        setOpenAlert(true);
+        if (onStatusEditBlog && typeof onStatusEditBlog === 'function') {
+          onStatusEditBlog({
+            status: 'danger',
+            message: `Update [${data.title}] failed!`,
+          });
+        }
+        if (onOpenAlert && typeof onOpenAlert === 'function') {
+          onOpenAlert(true);
+        }
       });
     toggle();
   };
 
-  React.useEffect(() => {
-    const timer = setInterval(() => setOpenAlert(false), 5000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <div className='text-center'>
-      {/*  */}
-      <Alert
-        color={statusNewBlog?.status}
-        isOpen={openAlert}
-      >
-        {statusNewBlog?.message}
-      </Alert>
-      {/*  */}
-      <Button
-        color='primary'
-        onClick={toggle}
-      >
-        Add New Blog
-      </Button>
+    <div>
       <Modal
-        isOpen={modal}
+        isOpen={isOpen}
         toggle={toggle}
       >
-        <ModalHeader toggle={toggle}>New Blog</ModalHeader>
+        <ModalHeader toggle={toggle}>Edit Blog</ModalHeader>
         <ModalBody>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <FormGroup>
@@ -107,6 +90,7 @@ export default function AddBlogModal({ hasNewBlog, open }: AddBlogModalProps) {
                 name='title'
                 control={control}
                 rules={{ required: true }}
+                defaultValue={data?.title ?? ''}
                 render={({ field }) => (
                   <Input
                     id='blog-title'
@@ -124,6 +108,7 @@ export default function AddBlogModal({ hasNewBlog, open }: AddBlogModalProps) {
                 name='content'
                 control={control}
                 rules={{ required: true }}
+                defaultValue={data?.content ?? ''}
                 render={({ field }) => (
                   <Input
                     id='blog-content'
@@ -141,6 +126,7 @@ export default function AddBlogModal({ hasNewBlog, open }: AddBlogModalProps) {
               <Controller
                 name='image'
                 control={control}
+                // defaultValue={data?.image?.url ?? ''}
                 render={({ field }) => (
                   <Input
                     id='blog-image'
@@ -163,14 +149,10 @@ export default function AddBlogModal({ hasNewBlog, open }: AddBlogModalProps) {
             color='primary'
             onClick={handleSubmit(onSubmit)}
           >
-            Create
+            Edit
           </Button>
         </ModalFooter>
       </Modal>
     </div>
   );
 }
-
-AddBlogModal.defaultProps = {
-  open: false,
-};
